@@ -1,5 +1,7 @@
 # FizzBuzz API
 
+[![Build Status](https://travis-ci.org/amnay-mo/fizzbuzz-api.svg?branch=dev)](https://travis-ci.org/amnay-mo/fizzbuzz-api)
+
 A REST API that does FizzBuzz!
 
 ## Building
