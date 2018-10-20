@@ -1,0 +1,12 @@
+branches:
+  except:
+    - master
+
+language: go
+go:
+  - "1.11.1"
+
+install: true
+
+script:
+  - make lint test build

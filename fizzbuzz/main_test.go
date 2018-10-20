@@ -1,0 +1,49 @@
+package fizzbuzz
+
+import (
+	"testing"
+
+	"github.com/amnay-mo/fizzbuzz-api/utils"
+)
+
+func TestIsMultiple(t *testing.T) {
+	tt := []struct {
+		lhr        int
+		rhn        int
+		isMultiple bool
+	}{
+		{0, 0, true},
+		{12, 0, false},
+		{0, 100, true},
+		{120, 5, true},
+		{1500, 3, true},
+		{45, 7, false},
+	}
+	for _, tc := range tt {
+		if isMultiple(tc.lhr, tc.rhn) != tc.isMultiple {
+			t.Errorf("isMultiple(%v, %v) should be %v", tc.lhr, tc.rhn, tc.isMultiple)
+		}
+	}
+}
+
+func TestSequence(t *testing.T) {
+	tt := []struct {
+		parameters Parameters
+		sequence   []string
+	}{
+		{Parameters{0, 0, 0, "niladic", "nil"}, []string{}},
+		{Parameters{0, 0, 10, "Never", "SayNever"}, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}},
+		{Parameters{1, 1, 10, "Salut", "Cava"}, []string{"SalutCava", "SalutCava", "SalutCava", "SalutCava", "SalutCava", "SalutCava", "SalutCava", "SalutCava", "SalutCava", "SalutCava"}},
+		{Parameters{2, 3, 10, "Bonnie", "Clyde"}, []string{"1", "Bonnie", "Clyde", "Bonnie", "5", "BonnieClyde", "7", "Bonnie", "Clyde", "Bonnie"}},
+	}
+	for _, tc := range tt {
+		seq := Sequence(&tc.parameters)
+		if !utils.AreEqualStringSlices(seq, tc.sequence) {
+			t.Errorf(
+				"Sequence(%v) should be %v",
+				tc.parameters,
+				tc.sequence,
+			)
+		}
+	}
+}
