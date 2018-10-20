@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/amnay-mo/fizzbuzz-api/utils"
@@ -11,39 +12,46 @@ import (
 
 func TestHandleFizzBuzz(t *testing.T) {
 	tt := []struct {
-		url      string
-		sequence []string
-		status   int
+		url         string
+		sequence    []string
+		status      int
+		errorPrefix string
 	}{
 		{
 			"localhost:8080/fizzbuzz?fizzNumber=2&buzzNumber=3&limit=10&fizzWord=Bonnie&buzzWord=Clyde",
 			[]string{"1", "Bonnie", "Clyde", "Bonnie", "5", "BonnieClyde", "7", "Bonnie", "Clyde", "Bonnie"},
 			http.StatusOK,
+			"",
 		},
 		{
 			"localhost:8080/fizzbuzz?fizzNumber=-1&buzzNumber=3&limit=10&fizzWord=Bonnie&buzzWord=Clyde",
 			[]string{},
 			http.StatusBadRequest,
+			"invalid fizzNumber",
 		},
 		{
 			"localhost:8080/fizzbuzz?fizzNumber=2&buzzNumber=notanumber&limit=10&fizzWord=Bonnie&buzzWord=Clyde",
 			[]string{},
 			http.StatusBadRequest,
+			"invalid buzzNumber",
 		},
 		{
 			"localhost:8080/fizzbuzz?fizzNumber=2&buzzNumber=3&limit=infinite&fizzWord=Bonnie&buzzWord=Clyde",
 			[]string{},
 			http.StatusBadRequest,
+			"invalid limit",
 		},
 		{
 			"localhost:8080/fizzbuzz?fizzNumber=2&buzzNumber=3&limit=10",
 			[]string{},
 			http.StatusBadRequest,
+			"fizzWord missing",
 		},
 		{
 			"localhost:8080/fizzbuzz?fizzWord=Bonnie&buzzWord=Clyde",
 			[]string{},
 			http.StatusBadRequest,
+			"fizzNumber missing",
 		},
 	}
 	for _, tc := range tt {
@@ -53,24 +61,33 @@ func TestHandleFizzBuzz(t *testing.T) {
 			nil,
 		)
 		if err != nil {
-			t.Fatalf("Could not create request: %v", err)
+			t.Fatalf("could not create request: %v", err)
 		}
 		rec := httptest.NewRecorder()
 		HandleFizzBuzz(rec, req)
 		res := rec.Result()
 		if res.StatusCode != tc.status {
-			t.Errorf("Expected Status %v, got: %v", tc.status, res.StatusCode)
+			t.Errorf("expected status %v, got: %v", tc.status, res.StatusCode)
 		}
 		if tc.status == http.StatusOK {
 			fbb := new(FizzBuzzBody)
 			dec := json.NewDecoder(res.Body)
 			err = dec.Decode(fbb)
 			if err != nil {
-				t.Fatalf("Could not decode body: %v", err)
+				t.Fatalf("could not decode body: %v", err)
 			}
-			expectedSequence := []string{"1", "Bonnie", "Clyde", "Bonnie", "5", "BonnieClyde", "7", "Bonnie", "Clyde", "Bonnie"}
-			if !utils.AreEqualStringSlices(fbb.Sequence, expectedSequence) {
-				t.Errorf("Expected: %v, got %v", expectedSequence, fbb.Sequence)
+			if !utils.AreEqualStringSlices(tc.sequence, fbb.Sequence) {
+				t.Errorf("expected sequence: %v, got: %v", tc.sequence, fbb.Sequence)
+			}
+		} else {
+			fbeb := new(FizzBuzzErrorBody)
+			dec := json.NewDecoder(res.Body)
+			err = dec.Decode(fbeb)
+			if err != nil {
+				t.Fatalf("could not decode body: %v", err)
+			}
+			if !strings.HasPrefix(fbeb.Error, tc.errorPrefix) {
+				t.Errorf("expected error message starting with: %s, got: %s", tc.errorPrefix, fbeb.Error)
 			}
 		}
 	}
