@@ -6,7 +6,7 @@ language: go
 go:
   - "1.11.1"
 
-install: true
+install: go get ./...
 
 script:
   - make lint test build
