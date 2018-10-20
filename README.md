@@ -18,7 +18,7 @@ Just run the binary!
 You may also specify the listen port with the `APP_PORT` env var:
 
 ```
-APP_PORT=9000 ./foobar-api
+APP_PORT=9000 ./fizzbuzz-api
 ```
 
 ## API Endpoints

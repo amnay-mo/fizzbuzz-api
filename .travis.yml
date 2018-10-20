@@ -2,6 +2,15 @@ branches:
   except:
     - master
 
+sudo: required
+
+services:
+  - docker
+
+env:
+  global:
+    - CLOUDSDK_CORE_DISABLE_PROMPTS: 1
+
 language: go
 go:
   - "1.11.1"
@@ -10,3 +19,10 @@ install: go get ./...
 
 script:
   - make lint test build
+
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: .travis/deploy.sh
+  on:
+    tags: true
