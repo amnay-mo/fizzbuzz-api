@@ -3,6 +3,6 @@ steps:
     args: ["make", "build", "test", "lint"]
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/fizzbuzz-api:$SHORT_SHA', '.']
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/fizzbuzz-api:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/fizzbuzz-api:latest' '.']
 
-images: ['gcr.io/$PROJECT_ID/fizzbuzz-api:$SHORT_SHA']
+images: ['gcr.io/$PROJECT_ID/fizzbuzz-api:$SHORT_SHA', 'gcr.io/$PROJECT_ID/fizzbuzz-api:latest']
