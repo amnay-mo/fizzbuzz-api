@@ -10,18 +10,34 @@ GOBUILD      := $(GOCMD) build
 GOCLEAN      := $(GOCMD) clean
 GOTEST       := $(GOCMD) test
 GOGET        := $(GOCMD) get
-GOMETALINTER := GOGC=400 gometalinter --disable-all -E deadcode -E errcheck -E gocyclo -E gofmt -E goimports -E golint -E ineffassign -E megacheck -E misspell -E nakedret -E structcheck -E unconvert -E unparam -E varcheck -E vet\
- --tests --vendor --warn-unmatched-nolint --sort=path --sort=line --deadline=10m --concurrency=2 --enable-gc ./...
 
-
-.PHONY: install-gometalinter
-install-gometalinter:
-	$(GOGET) github.com/alecthomas/gometalinter
-	gometalinter --install > /dev/null
 
 .PHONY: lint
-lint: install-gometalinter
-	$(GOMETALINTER)
+lint: golangci-lint
+
+GOLANGCI_LINT_VERSION=v1.17.1
+GOLANGCI_LINT_DIR=$(shell go env GOPATH)/pkg/golangci-lint/$(GOLANGCI_LINT_VERSION)
+$(GOLANGCI_LINT_DIR):
+	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(GOLANGCI_LINT_DIR) $(GOLANGCI_LINT_VERSION)
+
+.PHONY: install-golangci-lint
+install-golangci-lint: $(GOLANGCI_LINT_DIR)
+
+.PHONY: golangci-lint
+golangci-lint: install-golangci-lint
+	$(GOLANGCI_LINT_DIR)/golangci-lint run --disable-all \
+		--exclude-use-default=false \
+		--enable=govet \
+		--enable=ineffassign \
+		--enable=deadcode \
+		--enable=golint \
+		--enable=goconst \
+		--enable=gofmt \
+		--enable=goimports \
+		--skip-dirs=pkg/client/ \
+		--deadline=120s \
+		--tests ./...
+
 
 .PHONY: test
 test:

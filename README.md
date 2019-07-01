@@ -21,12 +21,18 @@ You may also specify the listen port with the `APP_PORT` env var:
 APP_PORT=9000 ./fizzbuzz-api
 ```
 
-## API Endpoints
+## Usage
 
-There is only one:
+- There is only one endpoint:
 
 ```
-/fizzbuzz?fizzNumber=2&buzzNumber=3&limit=10&fizzWord=Fizz&buzzWord=Buzz
+GET /fizzbuzz?fizzNumber=2&buzzNumber=3&limit=10&fizzWord=Fizz&buzzWord=Buzz
+```
+
+- You may give it a try it at:
+
+```
+https://fizzbuzz.amnay.fr/fizzbuzz?fizzNumber=2&buzzNumber=3&limit=10&fizzWord=Fizz&buzzWord=Buzz
 ```
 
 ## License
