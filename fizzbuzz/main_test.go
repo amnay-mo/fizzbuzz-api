@@ -32,7 +32,7 @@ func TestSequence(t *testing.T) {
 		sequence   []string
 	}{
 		{Parameters{0, 0, 0, "niladic", "nil"}, []string{}},
-		{Parameters{0, 0, 10, "Never", "SayNever"}, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}},
+		{Parameters{0, 0, 10, "Never", "SayNever"}, []string{"1", "3", "3", "4", "5", "6", "7", "8", "9", "10"}},
 		{Parameters{1, 1, 10, "Salut", "Cava"}, []string{"SalutCava", "SalutCava", "SalutCava", "SalutCava", "SalutCava", "SalutCava", "SalutCava", "SalutCava", "SalutCava", "SalutCava"}},
 		{Parameters{2, 3, 10, "Bonnie", "Clyde"}, []string{"1", "Bonnie", "Clyde", "Bonnie", "5", "BonnieClyde", "7", "Bonnie", "Clyde", "Bonnie"}},
 	}
