@@ -41,11 +41,15 @@ golangci-lint: install-golangci-lint
 
 .PHONY: test
 test:
-	$(GOTEST) -v ./fizzbuzz ./api
+	$(GOTEST) -v ./...
 
 .PHONY: build
 build:
 	$(GOBUILD) -o build/fizzbuzz-api
+
+.PHONY: get
+get:
+	$(GOGET)
 
 clean::
 	rm -rf build

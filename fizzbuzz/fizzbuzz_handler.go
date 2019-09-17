@@ -1,26 +1,25 @@
-package api
+package fizzbuzz
 
 import (
 	"fmt"
 	"net/http"
 	"strconv"
 
-	"github.com/amnay-mo/fizzbuzz-api/fizzbuzz"
 	"github.com/amnay-mo/fizzbuzz-api/utils"
 )
 
-// FizzBuzzBody is the body returned by the API
-type FizzBuzzBody struct {
+// Body is the body returned by the API
+type Body struct {
 	Sequence []string `json:"sequence"`
 }
 
-// FizzBuzzErrorBody is the body returned by the API
-type FizzBuzzErrorBody struct {
+// ErrorBody is the body returned by the API
+type ErrorBody struct {
 	Error string `json:"error"`
 }
 
 // nolint:gocyclo
-func parseFizzBuzzParameters(r *http.Request) (*fizzbuzz.Parameters, error) {
+func parseFizzBuzzParameters(r *http.Request) (*Parameters, error) {
 	fizzNumberStr := r.URL.Query().Get("fizzNumber")
 	if fizzNumberStr == "" {
 		return nil, fmt.Errorf("fizzNumber missing in query parameters")
@@ -53,7 +52,7 @@ func parseFizzBuzzParameters(r *http.Request) (*fizzbuzz.Parameters, error) {
 	if buzzWord == "" {
 		return nil, fmt.Errorf("buzzWord missing in query parameters")
 	}
-	return &fizzbuzz.Parameters{
+	return &Parameters{
 			FizzNumber: fizzNumber,
 			BuzzNumber: buzzNumber,
 			Limit:      limit,
@@ -66,10 +65,10 @@ func parseFizzBuzzParameters(r *http.Request) (*fizzbuzz.Parameters, error) {
 func HandleFizzBuzz(w http.ResponseWriter, r *http.Request) {
 	fbb, err := parseFizzBuzzParameters(r)
 	if err != nil {
-		utils.Jsonify(w, &FizzBuzzErrorBody{err.Error()}, http.StatusBadRequest)
+		utils.Jsonify(w, &ErrorBody{err.Error()}, http.StatusBadRequest)
 		return
 	}
-	sequence := fizzbuzz.Sequence(fbb)
-	body := FizzBuzzBody{Sequence: sequence}
+	sequence := Sequence(fbb)
+	body := Body{Sequence: sequence}
 	utils.Jsonify(w, &body, http.StatusOK)
 }

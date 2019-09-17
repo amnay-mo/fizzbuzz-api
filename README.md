@@ -1,6 +1,6 @@
 # FizzBuzz API
 
-[![Build Status](https://travis-ci.org/amnay-mo/fizzbuzz-api.svg?branch=dev)](https://travis-ci.org/amnay-mo/fizzbuzz-api)
+[![Build Status](https://travis-ci.com/amnay-mo/fizzbuzz-api.svg?token=zxyRL3yiy4zMBuyCG2my&branch=dev)](https://travis-ci.org/amnay-mo/fizzbuzz-api)
 
 A REST API that does FizzBuzz!
 
@@ -15,24 +15,24 @@ make lint test build
 ## Running
 
 Just run the binary!
-You may also specify the listen port with the `APP_PORT` env var:
+You may specify the HTTP port and the Redis backend's address with the `APP_PORT` and `REDIS_ADDR` env var:
 
 ```
-APP_PORT=9000 ./fizzbuzz-api
+REDIS_ADDR=localhost:6379 APP_PORT=9000 ./fizzbuzz-api
 ```
 
 ## Usage
 
-- There is only one endpoint:
+- This is how you call the fizzbuzz endpoint:
 
 ```
 GET /fizzbuzz?fizzNumber=2&buzzNumber=3&limit=10&fizzWord=Fizz&buzzWord=Buzz
 ```
 
-- You may give it a try it at:
+- You may also get stats on the most queried fizzbuzz parameters:
 
 ```
-https://fizzbuzz.amnay.fr/fizzbuzz?fizzNumber=2&buzzNumber=3&limit=10&fizzWord=Fizz&buzzWord=Buzz
+GET /fizzbuzz/stats
 ```
 
 ## License
