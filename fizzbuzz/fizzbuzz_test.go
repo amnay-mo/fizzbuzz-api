@@ -1,9 +1,8 @@
 package fizzbuzz
 
 import (
+	"reflect"
 	"testing"
-
-	"github.com/amnay-mo/fizzbuzz-api/utils"
 )
 
 func TestIsMultiple(t *testing.T) {
@@ -38,7 +37,7 @@ func TestSequence(t *testing.T) {
 	}
 	for _, tc := range tt {
 		seq := Sequence(&tc.parameters)
-		if !utils.AreEqualStringSlices(seq, tc.sequence) {
+		if !reflect.DeepEqual(seq, tc.sequence) {
 			t.Errorf(
 				"Sequence(%v) should be %v",
 				tc.parameters,

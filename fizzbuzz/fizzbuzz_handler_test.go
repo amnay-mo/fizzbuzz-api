@@ -1,13 +1,12 @@
-package api
+package fizzbuzz
 
 import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
-
-	"github.com/amnay-mo/fizzbuzz-api/utils"
 )
 
 func TestHandleFizzBuzz(t *testing.T) {
@@ -70,17 +69,17 @@ func TestHandleFizzBuzz(t *testing.T) {
 			t.Errorf("expected status %v, got: %v", tc.status, res.StatusCode)
 		}
 		if tc.status == http.StatusOK {
-			fbb := new(FizzBuzzBody)
+			fbb := new(Body)
 			dec := json.NewDecoder(res.Body)
 			err = dec.Decode(fbb)
 			if err != nil {
 				t.Fatalf("could not decode body: %v", err)
 			}
-			if !utils.AreEqualStringSlices(tc.sequence, fbb.Sequence) {
+			if !reflect.DeepEqual(tc.sequence, fbb.Sequence) {
 				t.Errorf("expected sequence: %v, got: %v", tc.sequence, fbb.Sequence)
 			}
 		} else {
-			fbeb := new(FizzBuzzErrorBody)
+			fbeb := new(ErrorBody)
 			dec := json.NewDecoder(res.Body)
 			err = dec.Decode(fbeb)
 			if err != nil {

@@ -1,11 +1,11 @@
-FROM golang:1.11.1-alpine3.8 as builder
-RUN apk --no-cache add make
+FROM golang:1.12-stretch as builder
+ENV GO111MODULE=auto
 WORKDIR /go/src/github.com/amnay-mo/fizzbuzz-api
 COPY . /go/src/github.com/amnay-mo/fizzbuzz-api
-RUN make build
+RUN make get build
 
 
-FROM alpine:3.8
+FROM debian:stretch-slim
 LABEL maintainer="amnay.m@gmail.com"
 WORKDIR /app
 ENTRYPOINT [ "/app/fizzbuzz-api" ]

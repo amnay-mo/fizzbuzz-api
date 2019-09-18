@@ -2,27 +2,15 @@ branches:
   except:
     - master
 
-sudo: required
+language: go
 
-services:
-  - docker
+go:
+  - "1.12"
 
 env:
-  global:
-    - CLOUDSDK_CORE_DISABLE_PROMPTS: 1
-
-language: go
-go:
-  - "1.11.1"
+  - GO111MODULE=auto
 
 install: go get ./...
 
 script:
-  - make lint test build
-
-deploy:
-  provider: script
-  skip_cleanup: true
-  script: .travis/deploy.sh
-  on:
-    tags: true
+  - make clean get lint test build
