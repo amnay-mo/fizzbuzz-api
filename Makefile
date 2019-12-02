@@ -4,6 +4,8 @@
 .PHONY: noop
 noop:
 
+GO111MODULE=on
+
 
 GOCMD        := go
 GOBUILD      := $(GOCMD) build
