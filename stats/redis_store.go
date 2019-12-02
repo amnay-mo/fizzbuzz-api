@@ -26,7 +26,7 @@ func (r *RedisStore) Increment(endpoint string) error {
 
 // GetMax returns endpoint with most hits
 func (r *RedisStore) GetMax() (*Stats, error) {
-	cmd := r.client.ZRevRangeByScoreWithScores(redisHitsCountKey, &redis.ZRangeBy{Min: "-inf", Max: "+inf", Offset: 0, Count: 1})
+	cmd := r.client.ZRevRangeByScoreWithScores(redisHitsCountKey, redis.ZRangeBy{Min: "-inf", Max: "+inf", Offset: 0, Count: 1})
 	if err := cmd.Err(); err != nil {
 		return nil, fmt.Errorf("could not fetch max hits from redis: %v", err)
 	}

@@ -53,6 +53,7 @@ func TestHandleFizzBuzz(t *testing.T) {
 			"fizzNumber missing",
 		},
 	}
+	h := GetHandlerFunc(Sequence)
 	for _, tc := range tt {
 		req, err := http.NewRequest(
 			"GET",
@@ -63,7 +64,7 @@ func TestHandleFizzBuzz(t *testing.T) {
 			t.Fatalf("could not create request: %v", err)
 		}
 		rec := httptest.NewRecorder()
-		HandleFizzBuzz(rec, req)
+		h(rec, req)
 		res := rec.Result()
 		if res.StatusCode != tc.status {
 			t.Errorf("expected status %v, got: %v", tc.status, res.StatusCode)

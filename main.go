@@ -12,6 +12,20 @@ import (
 	"github.com/amnay-mo/fizzbuzz-api/utils"
 )
 
+type config struct {
+	AppPort   int
+	RedisAddr string
+	MaxLimit  int
+}
+
+func getConfig() *config {
+	return &config{
+		AppPort:   getHTTPPPort(),
+		RedisAddr: getRedisAddr(),
+		MaxLimit:  getMaxLimit(),
+	}
+}
+
 func getHTTPPPort() int {
 	portStr := os.Getenv("APP_PORT")
 	if portStr == "" {
@@ -23,6 +37,17 @@ func getHTTPPPort() int {
 	}
 	return port
 }
+func getMaxLimit() int {
+	maxLimitStr := os.Getenv("MAX_LIMIT")
+	if maxLimitStr == "" {
+		maxLimitStr = "0"
+	}
+	maxLimit, err := strconv.Atoi(maxLimitStr)
+	if err != nil || maxLimit < 0 {
+		log.Fatalf("Bad MAX_LIMIT: %v", maxLimitStr)
+	}
+	return maxLimit
+}
 
 func getRedisAddr() string {
 	addr := os.Getenv("REDIS_ADDR")
@@ -33,14 +58,15 @@ func getRedisAddr() string {
 }
 
 func main() {
-	store := stats.NewRedisStatsStore(getRedisAddr())
+	configuration := getConfig()
+	store := stats.NewRedisStatsStore(configuration.RedisAddr)
 	http.Handle("/fizzbuzz", stats.Middleware{
 		Store: store,
-		Next:  http.HandlerFunc(fizzbuzz.HandleFizzBuzz),
+		Next: fizzbuzz.GetHandlerFunc(
+			fizzbuzz.WithMaxLimit(fizzbuzz.Sequence, configuration.MaxLimit)),
 	})
 	http.Handle("/fizzbuzz/stats", &stats.HTTPHandler{Store: store})
-	appPort := getHTTPPPort()
-	appAddr := fmt.Sprintf(":%d", appPort)
+	appAddr := fmt.Sprintf(":%d", configuration.AppPort)
 	log.Printf("listening on %s", appAddr)
 	err := http.ListenAndServe(
 		appAddr,

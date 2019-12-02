@@ -1,6 +1,7 @@
 package fizzbuzz
 
 import (
+	"errors"
 	"strconv"
 )
 
@@ -21,8 +22,24 @@ type Parameters struct {
 	FizzWord, BuzzWord            string
 }
 
+// SequenceFunc is a fizzbuzz sequence function
+type SequenceFunc func(params *Parameters) ([]string, error)
+
+// WithMaxLimit adds max limit check on a fizzbuzz sequence function
+func WithMaxLimit(f SequenceFunc, maxLimit int) SequenceFunc {
+	if maxLimit < 1 {
+		return f
+	}
+	return func(params *Parameters) ([]string, error) {
+		if params.Limit > maxLimit {
+			return nil, ErrMaxLimitExceeded
+		}
+		return f(params)
+	}
+}
+
 // Sequence returns a fizzbuzz sequence based on the input
-func Sequence(params *Parameters) []string {
+func Sequence(params *Parameters) ([]string, error) {
 	fizzBuzzWord := params.FizzWord + params.BuzzWord
 	sequence := make([]string, params.Limit)
 	var number int
@@ -39,5 +56,8 @@ func Sequence(params *Parameters) []string {
 			sequence[i] = strconv.Itoa(number)
 		}
 	}
-	return sequence
+	return sequence, nil
 }
+
+// ErrMaxLimitExceeded is an error thrown when the max limit is exceeded
+var ErrMaxLimitExceeded = errors.New("max limit exceeded")
