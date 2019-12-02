@@ -15,10 +15,16 @@ make lint test build
 ## Running
 
 Just run the binary!
-You may specify the HTTP port and the Redis backend's address with the `APP_PORT` and `REDIS_ADDR` env var:
+You may configure the app using env vars:
+
+- `APP_PORT`: listen port
+- `REDIS_ADDR`: redis backend addr in the form of `<HOST>:<PORT>`
+- `MAX_LIMIT`: the maximum limit parameter the application will accept; if exceeded, it will return a status `412`
+
+Example:
 
 ```
-REDIS_ADDR=localhost:6379 APP_PORT=9000 ./fizzbuzz-api
+REDIS_ADDR=localhost:6379 APP_PORT=9000 MAX_LIMIT=1024 ./fizzbuzz-api
 ```
 
 ## Usage
